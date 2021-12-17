@@ -9,7 +9,7 @@ options.add_argument("-y", "--year",             required=True, help="Used to se
 options.add_argument("-i", "--inputLheLocation", required=True, help="Input LHE filepath (either a specific file or a directory containing multiple .lhe files)")
 options.add_argument("-f", "--nJobFiles",        required=True, help="Number of files to split the input .lhe into",type=int)
 options.add_argument("-o", "--outputDirectory",  required=True, help="Output base directory filepath for jobs. Should be an EOS area.")
-options.add_argument("-p", "--pythiaHadronizer", required=True, help="Hadronizer to be used in GEN step", choices=['54'])
+options.add_argument("-p", "--pythiaHadronizer", required=True, help="Hadronizer to be used in GEN step", choices=['54','90000054'])
 options.add_argument("-n", "--nEvents",          nargs='?',     help="Number of events to run over for each split lhe (defaults to -1 (all))", const=-1, type=int, default=-1)
 ops = options.parse_args()
 
@@ -94,6 +94,7 @@ for inputlhe in inputlhes:
         
     #submit jobs
     os.system('cp ../condorsubmit_lhetominiaod.sh .')
+    os.system('cp ../Premix_RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2.list .')
     os.system('cp ../GEN_'+ops.year+'_cfg.py .')
     os.system('cp ../SIM_'+ops.year+'_cfg.py .')
     os.system('cp ../DIGIPremix_'+ops.year+'_cfg.py .')

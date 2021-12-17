@@ -7,12 +7,12 @@ export SCRAM_ARCH=slc7_amd64_gcc700
 
 pwd
 
-echo "\n"
-echo "$1 : file number"
-echo "$2 : year (2016/2017/2018)"
-echo "$3 : hadronizer"
-echo "$4 : numEvents to run over"
-echo "$5 : outputDir to xrdcp to"
+printf "\n\n"
+printf "\n$1 : file number"
+printf "\n$2 : year (2016/2017/2018)"
+printf "\n$3 : hadronizer"
+printf "\n$4 : numEvents to run over"
+printf "\n$5 : outputDir to xrdcp to\n"
 
 #GEN, SIM, DIGI
 eval `scramv1 project CMSSW CMSSW_10_6_20`
@@ -21,16 +21,18 @@ eval `scramv1 runtime -sh`
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
 
-echo "\nDoing LHE > GEN"
+printf "\n\nDoing LHE > GEN\n"
 cmsRun GEN_$2_cfg.py inputFile=file:splitLHE_$1.lhe hadronizer=$3 numEvents=$4
 ls
 
-echo "\nDoing GEN > SIM"
+printf "\n\nDoing GEN > SIM\n"
 cmsRun SIM_$2_cfg.py
 ls
-xrdcp SIM.root $5/gensim_$1.root
 
-echo "\nDoing SIM > DIGI"
+ xrdcp SIM.root $5/gensim_$1.root
+# xrdcp $5/gensim_$1.root SIM.root
+
+printf "\n\nDoing SIM > DIGI\n"
 cmsRun DIGIPremix_$2_cfg.py
 ls
 
@@ -41,7 +43,7 @@ eval `scramv1 runtime -sh`
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
 
-echo "\nDoing DIGI > HLT"
+printf "\n\nDoing DIGI > HLT\n"
 cmsRun HLT_$2_cfg.py
 ls
 
@@ -53,11 +55,11 @@ pwd
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
 
-echo "\nDoing HLT > RECO"
+printf "\n\nDoing HLT > RECO\n"
 cmsRun RECO_$2_cfg.py
 ls
 
-echo "\nDoing RECO > MINI"
+printf "\n\nDoing RECO > MINI\n"
 cmsRun MINIAOD_$2_cfg.py outputFile=miniAOD_$1.root
 ls
 
