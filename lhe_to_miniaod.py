@@ -53,12 +53,16 @@ for inputlhe in inputlhes:
         if os.path.isdir(ops.outputDirectory+'/'+fulljobname): print "WARNING: directory named "+ops.outputDirectory+'/'+fulljobname+" already exists, files will be overwritten"
         else: os.system('mkdir -p '+ops.outputDirectory+'/'+fulljobname)
 
-    elif ".fnal.gov" in hostname: #not tested----------------------------------------------------------------------------------------
-        if ( (ops.outputDirectory).startswith("/store/user/") or (ops.outputDirectory).startswith("/eos/uscms/store/user/") ): os.system('eosmkdir -p '+ops.outputDirectory+'/'+fulljobname)
+    elif ".fnal.gov" in hostname: 
+        if (ops.outputDirectory).startswith("/store/user/"): 
+            os.system('eos root://cmseos.fnal.gov mkdir -p '+ops.outputDirectory+'/'+fulljobname)
+        # elif (ops.outputDirectory).startswith("/eos/uscms/store/user/") : #this wont work with the prefix bit; fix---------------
+        #     os.system('eos root://cmseos.fnal.gov mkdir -p '+ops.outputDirectory+'/'+fulljobname)
         else:
-            print "ERROR: for output directory, specify an EOS path starting in /store/user/ or /eos/uscms/store/user/"
+            #print "ERROR: for output directory, specify an EOS path starting in /store/user/ or /eos/uscms/store/user/"
+            print "ERROR: for output directory, specify an EOS path starting in /store/user/"
             exit()
-        prefix="root://cmseos.fnal.gov//" #------------------------------------------------------------------------------------------
+        prefix="root://cmseos.fnal.gov//" 
     outputDir=prefix+ops.outputDirectory+'/'+fulljobname
 
     #split lhe

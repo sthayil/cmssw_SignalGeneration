@@ -29,7 +29,7 @@ printf "\n\nDoing GEN > SIM\n"
 cmsRun SIM_$2_cfg.py
 ls
 
- xrdcp SIM.root $5/gensim_$1.root
+# xrdcp SIM.root $5/gensim_$1.root
 # xrdcp $5/gensim_$1.root SIM.root
 
 printf "\n\nDoing SIM > DIGI\n"
@@ -50,14 +50,15 @@ ls
 #RECO, MINI
 cd CMSSW_10_6_20/src
 eval `scramv1 runtime -sh`
-cd ../..
-pwd
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
 
 printf "\n\nDoing HLT > RECO\n"
 cmsRun RECO_$2_cfg.py
 ls
+
+# xrdcp RECO.root $5/reco_$1.root
+# xrdcp $5/reco_$1.root RECO.root
 
 printf "\n\nDoing RECO > MINI\n"
 cmsRun MINIAOD_$2_cfg.py outputFile=miniAOD_$1.root
