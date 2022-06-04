@@ -171,6 +171,68 @@ from FWCore.ParameterSet.Utilities import convertToUnscheduled
 process=convertToUnscheduled(process)
 
 # customisation of the process.
+process.prunedGenParticles.select = cms.vstring('drop  *',
+        '++keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15', # keep all ancestors of leptons
+        'keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16', # keep all neutrinos
+        'drop   status == 2', # drop status 2
+        '+keep pdgId == 22 && status == 1 && (pt > 10 || isPromptFinalState())', # keep the direct ancestor of some good photons
+        '+keep abs(pdgId) == 11 && status == 1 && (pt > 3 || isPromptFinalState())', # keep the direct ancestor of some good electrons
+        'keep++ abs(pdgId) == 15', # keep all daughters of taus
+        'drop  status > 30 && status < 70 ', # drop status 31-69
+        'drop  pdgId == 21 && pt < 5', # drop gluons with pt < 5
+        'drop   status == 2 && abs(pdgId) == 21', # drop gluons of status 2
+        'keep abs(pdgId) == 23 || abs(pdgId) == 24 || abs(pdgId) == 25 || abs(pdgId) == 6 || abs(pdgId) == 37 ', # keep all Z, W, Higgs, and top
+        'keep abs(pdgId) == 310 && abs(eta) < 2.5 && pt > 1 ', # keep some K-short
+        'keep (4 <= abs(pdgId) <= 5)', # keep all charm and bottom quarks
+        'keep (1 <= abs(pdgId) <= 3 || pdgId = 21) & (status = 2 || status = 11 || status = 71 || status = 72) && pt>5', # keep some u, d, s, gluons, those likely from the beam
+        'keep (400 < abs(pdgId) < 600) || (4000 < abs(pdgId) < 6000)', # keep some heavy mesons
+        'keep abs(pdgId) == 443 || abs(pdgId) == 100443 || abs(pdgId) == 10441 || abs(pdgId) == 20443 || abs(pdgId) == 445 || abs(pdgId) == 30443', # 
+        'keep abs(pdgId) == 553 || abs(pdgId) == 100553 || abs(pdgId) == 200553 || abs(pdgId) == 10551 || abs(pdgId) == 20553 || abs(pdgId) == 555', #
+        'keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433', #
+        'keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543', #
+        'keep (1000001 <= abs(pdgId) <= 1000039 ) || ( 2000001 <= abs(pdgId) <= 2000015)', #
+        'keep pdgId = 2212', # keep all protons
+        'keep status == 3 || ( 21 <= status <= 29) || ( 11 <= status <= 19)', # keep status 3, all beam, and all hard
+        'keep isHardProcess() || fromHardProcessFinalState() || fromHardProcessDecayed() || fromHardProcessBeforeFSR() || (statusFlags().fromHardProcess() && statusFlags().isLastCopy())', # keep hard
+        'keep++ pdgId == 54', # keep all daughters of the Phi particle
+        'keep pdgId == 54', # keep the Phi particle
+        'keep++ pdgId == 90000054', # keep all daughters of the pomgea particle
+        'keep pdgId == 90000054' # keep the pomega particle
+        'keep++ pdgId == 90000055', # keep all daughters of the pomgea particle
+        'keep pdgId == 90000055' # keep the pomega particle
+        )
+
+process.prunedGenParticlesWithStatusOne.select = cms.vstring('drop *',
+        '++keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15',
+        'keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16',
+        'drop   status == 2',
+        '+keep pdgId == 22 && status == 1 && (pt > 10 || isPromptFinalState())',
+        '+keep abs(pdgId) == 11 && status == 1 && (pt > 3 || isPromptFinalState())',
+        'keep++ abs(pdgId) == 15',
+        'drop  status > 30 && status < 70 ',
+        'drop  pdgId == 21 && pt < 5',
+        'drop   status == 2 && abs(pdgId) == 21',
+        'keep abs(pdgId) == 23 || abs(pdgId) == 24 || abs(pdgId) == 25 || abs(pdgId) == 6 || abs(pdgId) == 37 ',
+        'keep abs(pdgId) == 310 && abs(eta) < 2.5 && pt > 1 ',
+        'keep (4 <= abs(pdgId) <= 5)',
+        'keep (1 <= abs(pdgId) <= 3 || pdgId = 21) & (status = 2 || status = 11 || status = 71 || status = 72) && pt>5',
+        'keep (400 < abs(pdgId) < 600) || (4000 < abs(pdgId) < 6000)',
+        'keep abs(pdgId) == 443 || abs(pdgId) == 100443 || abs(pdgId) == 10441 || abs(pdgId) == 20443 || abs(pdgId) == 445 || abs(pdgId) == 30443',
+        'keep abs(pdgId) == 553 || abs(pdgId) == 100553 || abs(pdgId) == 200553 || abs(pdgId) == 10551 || abs(pdgId) == 20553 || abs(pdgId) == 555',
+        'keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433',
+        'keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543',
+        'keep (1000001 <= abs(pdgId) <= 1000039 ) || ( 2000001 <= abs(pdgId) <= 2000015)',
+        'keep pdgId = 2212',
+        'keep status == 3 || ( 21 <= status <= 29) || ( 11 <= status <= 19)',
+        'keep isHardProcess() || fromHardProcessFinalState() || fromHardProcessDecayed() || fromHardProcessBeforeFSR() || (statusFlags().fromHardProcess() && statusFlags().isLastCopy())',
+        'keep    status == 1',
+        'keep++ pdgId == 54', # keep all daughters of the Phi particle
+        'keep pdgId == 54', # keep the Phi particle
+        'keep++ pdgId == 90000054', # keep all daughters of the pomgea particle
+        'keep pdgId == 90000054' # keep the pomega particle
+        'keep++ pdgId == 90000055', # keep all daughters of the pomgea particle
+        'keep pdgId == 90000055' # keep the pomega particle
+        )
 
 # Automatic addition of the customisation function from PhysicsTools.PatAlgos.slimming.miniAOD_tools
 from PhysicsTools.PatAlgos.slimming.miniAOD_tools import miniAOD_customizeAllMC 
