@@ -197,7 +197,7 @@ process.prunedGenParticles.select = cms.vstring('drop  *',
         'keep++ pdgId == 54', # keep all daughters of the Phi particle
         'keep pdgId == 54', # keep the Phi particle
         'keep++ pdgId == 90000054', # keep all daughters of the pomgea particle
-        'keep pdgId == 90000054' # keep the pomega particle
+        'keep pdgId == 90000054', # keep the pomega particle
         'keep++ pdgId == 90000055', # keep all daughters of the pomgea particle
         'keep pdgId == 90000055' # keep the pomega particle
         )
@@ -229,7 +229,7 @@ process.prunedGenParticlesWithStatusOne.select = cms.vstring('drop *',
         'keep++ pdgId == 54', # keep all daughters of the Phi particle
         'keep pdgId == 54', # keep the Phi particle
         'keep++ pdgId == 90000054', # keep all daughters of the pomgea particle
-        'keep pdgId == 90000054' # keep the pomega particle
+        'keep pdgId == 90000054', # keep the pomega particle
         'keep++ pdgId == 90000055', # keep all daughters of the pomgea particle
         'keep pdgId == 90000055' # keep the pomega particle
         )
