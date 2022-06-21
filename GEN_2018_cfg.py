@@ -126,6 +126,58 @@ if options.hadronizer =="54":
             pythiaPylistVerbosity = cms.untracked.int32(1)
         )
 
+#54_twoprongdecay (for steffie's signal)
+elif options.hadronizer =="54_twoprongdecay":
+        process.generator = cms.EDFilter("Pythia8HadronizerFilter",
+            PythiaParameters = cms.PSet(
+                parameterSets = cms.vstring(
+                    'pythia8CommonSettings', 
+                    'pythia8CUEP8M1Settings', 
+                    'processParameters'
+                ),
+                processParameters = cms.vstring(
+                    '54:new', 
+                    '54:name = pomega_bsm', 
+                    '54:spinType = 1', 
+                    '54:chargeType = 0', 
+                    '54:colType = 0', 
+                    '54:mayDecay = true', 
+#                    '54:addChannel = 1 0.3931181 0 22 22', 
+#                    '54:addChannel = 1 0.3257150 0 111 111 111', 
+#                    '54:addChannel = 1 0.0002700 0 111 22 22', 
+                    '54:addChannel = 1 0.2274105 0 211 -211 111', 
+                    '54:addChannel = 1 0.0460021 0 211 -211 22', 
+#                    '54:addChannel = 1 0.0069003 11 22 11 -11', 
+#                    '54:addChannel = 1 0.0003100 11 22 13 -13', 
+#                    '54:addChannel = 1 0.0000060 0 13 -13', 
+#                    '54:addChannel = 1 0.0002680 12 211 -211 11 -11'
+                ),
+                pythia8CUEP8M1Settings = cms.vstring(
+                    'Tune:pp 14', 
+                    'Tune:ee 7', 
+                    'MultipartonInteractions:pT0Ref=2.4024', 
+                    'MultipartonInteractions:ecmPow=0.25208', 
+                    'MultipartonInteractions:expPow=1.6'
+                ),
+                pythia8CommonSettings = cms.vstring(
+                    'Tune:preferLHAPDF = 2', 
+                    'Main:timesAllowErrors = 10000', 
+                    'Check:epTolErr = 0.01', 
+                    'Beams:setProductionScalesFromLHEF = off', 
+                    'SLHA:keepSM = on', 
+                    'SLHA:minMassSM = 1000.', 
+                    'ParticleDecays:limitTau0 = on', 
+                    'ParticleDecays:tau0Max = 10', 
+                    'ParticleDecays:allowPhotonRadiation = on'
+                )
+            ),
+            comEnergy = cms.double(13000.0),
+            filterEfficiency = cms.untracked.double(1.0),
+            maxEventsToPrint = cms.untracked.int32(1),
+            pythiaHepMCVerbosity = cms.untracked.bool(False),
+            pythiaPylistVerbosity = cms.untracked.int32(1)
+        )
+
 #90000054 (brandon's signal)
 elif options.hadronizer =="90000054":
         process.generator = cms.EDFilter("Pythia8HadronizerFilter",
@@ -181,6 +233,7 @@ elif options.hadronizer =="90000054":
 
 else: 
         print "ERROR: No valid hadronizer chosen. Exiting..."
+        print options.hadronizer
         exit()
 
 process.ProductionFilterSequence = cms.Sequence(process.generator)

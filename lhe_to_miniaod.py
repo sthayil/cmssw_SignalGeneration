@@ -9,7 +9,7 @@ options.add_argument("-y", "--year",             required=True, help="Used to se
 options.add_argument("-i", "--inputLheLocation", required=True, help="Input LHE filepath (either a specific file or a directory containing multiple .lhe files)")
 options.add_argument("-f", "--nJobFiles",        required=True, help="Number of files to split the input .lhe into",type=int)
 options.add_argument("-o", "--outputDirectory",  required=True, help="Output base directory filepath for jobs. Should be an EOS area.")
-options.add_argument("-p", "--pythiaHadronizer", required=True, help="Hadronizer to be used in GEN step", choices=['54','90000054'])
+options.add_argument("-p", "--pythiaHadronizer", required=True, help="Hadronizer to be used in GEN step", choices=['54','90000054', '54_twoprongdecay'])
 options.add_argument("-n", "--nEvents",          nargs='?',     help="Number of events to run over for each split lhe (defaults to -1 (all))", const=-1, type=int, default=-1)
 ops = options.parse_args()
 
