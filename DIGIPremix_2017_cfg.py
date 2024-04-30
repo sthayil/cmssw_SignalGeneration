@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: step3 --filein file:SIM.root --fileout file:DIGIPremix.root --pileup_input file:blah.root --mc --eventcontent PREMIXRAW --runUnscheduled --datatier GEN-SIM-DIGI --conditions 106X_upgrade2018_realistic_v15_L1v1 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --nThreads 8 --geometry DB:Extended --datamix PreMix --era Run2_2018 --python_filename DIGIPremix_2018_cfg.py -n -1 --no_exec
+# with command line options: step3 --mc --eventcontent PREMIXRAW --runUnscheduled --datatier GEN-SIM-DIGI --conditions 106X_mc2017_realistic_v6 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --nThreads 8 --geometry DB:Extended --datamix PreMix --era Run2_2017 --filein file:SIM.root --fileout file:DIGIPremix.root --pileup_input file:blah.root --datamix PreMix --python_filename DIGIPremix_2017_cfg.py -n -1 --no_exec
 import FWCore.ParameterSet.Config as cms
 import random, os
 from FWCore.ParameterSet.VarParsing import VarParsing
@@ -11,10 +11,10 @@ options.register("inputFile", "file:SIM.root", VarParsing.multiplicity.singleton
 options.register("numEvents", -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "")
 options.setDefault("outputFile", "file:DIGIPremix.root")
 options.parseArguments()
-from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
+from Configuration.Eras.Era_Run2_2017_cff import Run2_2017
 from Configuration.ProcessModifiers.premix_stage2_cff import premix_stage2
 
-process = cms.Process('DIGI2RAW',Run2_2018,premix_stage2)
+process = cms.Process('DIGI2RAW',Run2_2017,premix_stage2)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -87,7 +87,7 @@ process.PREMIXRAWoutput = cms.OutputModule("PoolOutputModule",
 # Additional output definition
 
 # Other statements
-f=open("Premix_RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2.list", "r")
+f=open("Premix_RunIISummer20ULPrePremix-UL17_106X_mc2017_realistic_v6-v3.list", "r")
 PU_files = f.readlines()
 f.close()
 PU_file = random.choice(PU_files)
@@ -96,9 +96,10 @@ PU_file = random.choice(PU_files)
 #os.system('xrdcp root://cmsxrootd.fnal.gov/'+str.rstrip(PU_file)+' ./premix.root')
 #process.mixData.input.fileNames = cms.untracked.vstring(['file:premix.root'])
 
-process.mixData.input.fileNames = cms.untracked.vstring(['file:root://cmsxrootd.fnal.gov/'+PU_file])
+#process.mixData.input.fileNames = cms.untracked.vstring(['file:root://cmsxrootd.fnal.gov/'+PU_file])
+process.mixData.input.fileNames = cms.untracked.vstring(['file:root://cms-xrd-global.cern.ch/'+PU_file])
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '106X_upgrade2018_realistic_v15_L1v1', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '106X_mc2017_realistic_v6', '')
 
 # Path and EndPath definitions
 process.digitisation_step = cms.Path(process.pdigi)

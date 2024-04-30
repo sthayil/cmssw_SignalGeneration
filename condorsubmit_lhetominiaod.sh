@@ -15,8 +15,8 @@ printf "\n$4 : numEvents to run over"
 printf "\n$5 : outputDir to xrdcp to\n"
 
 #GEN, SIM, DIGI
-eval `scramv1 project CMSSW CMSSW_10_6_20`
-cd CMSSW_10_6_20/src
+eval `scramv1 project CMSSW CMSSW_10_6_20_patch1`
+cd CMSSW_10_6_20_patch1/src
 eval `scramv1 runtime -sh`
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
@@ -24,6 +24,12 @@ pwd
 printf "\n\nDoing LHE > GEN\n"
 cmsRun GEN_$2_cfg.py inputFile=file:splitLHE_$1.lhe hadronizer=$3 numEvents=$4
 ls
+
+eval `scramv1 project CMSSW CMSSW_10_6_17_patch1`
+cd CMSSW_10_6_17_patch1/src
+eval `scramv1 runtime -sh`
+cd ${_CONDOR_SCRATCH_DIR}
+pwd
 
 printf "\n\nDoing GEN > SIM\n"
 cmsRun SIM_$2_cfg.py
@@ -37,8 +43,19 @@ cmsRun DIGIPremix_$2_cfg.py
 ls
 
 #HLT
-eval `scramv1 project CMSSW CMSSW_10_2_16_UL`
-cd CMSSW_10_2_16_UL/src
+if [[ "$2" == "2018" ]]; then
+    cmsswver="CMSSW_10_2_16_UL"
+elif [[ "$2" == "2017" ]]; then
+    cmsswver="CMSSW_9_4_14_UL_patch1"
+elif [[ "$2" == "2016" ]]; then
+    cmsswver="CMSSW_8_0_33_UL"
+else
+    printf "Unknown year! Exiting..."
+    exit
+fi
+
+eval "scramv1 project CMSSW $cmsswver"
+cd $cmsswver/src
 eval `scramv1 runtime -sh`
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
@@ -48,7 +65,7 @@ cmsRun HLT_$2_cfg.py
 ls
 
 #RECO, MINI
-cd CMSSW_10_6_20/src
+cd CMSSW_10_6_17_patch1/src
 eval `scramv1 runtime -sh`
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
