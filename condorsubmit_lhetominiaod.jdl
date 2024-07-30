@@ -1,4 +1,5 @@
 universe = vanilla
++DesiredOS="SL7"
 initialdir = .
 #use_x509userproxy = true
 #x509userproxy         = $ENV(X509_USER_PROXY)

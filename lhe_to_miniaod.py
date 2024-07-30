@@ -99,6 +99,7 @@ for inputlhe in inputlhes:
     #submit jobs
     os.system('cp ../condorsubmit_lhetominiaod.sh .')
     os.system('cp ../Premix_RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2.list .')
+    os.system('cp ../Premix_RunIISummer20ULPrePremix-UL17_106X_mc2017_realistic_v6-v3.list .')
     os.system('cp ../GEN_'+ops.year+'_cfg.py .')
     os.system('cp ../SIM_'+ops.year+'_cfg.py .')
     os.system('cp ../DIGIPremix_'+ops.year+'_cfg.py .')

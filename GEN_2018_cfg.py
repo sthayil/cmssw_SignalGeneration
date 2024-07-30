@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: Configuration/GenProduction/python/Hadronizer_TuneCUETP8M1_13TeV_Phi2simpttqed_54_eta_LHE_pythia8_cff.py --fileout file:GEN.root --filein file:../../events.lhe --mc --eventcontent RAWSIM --datatier GEN --conditions 106X_upgrade2018_realistic_v15_L1v1 --beamspot Realistic25ns13TeVEarly2018Collision --step GEN --geometry DB:Extended --era Run2_2018 --python_filename GEN_2018_cfg.py -n -1 --no_exec
+# with command line options: Hadronizer_TuneCUETP8M1_13TeV_Phi2simpttqed_54_eta_LHE_pythia8_cff.py --mc --eventcontent RAWSIM --datatier GEN --conditions 106X_upgrade2018_realistic_v4 --beamspot Realistic25ns13TeVEarly2018Collision --step GEN --geometry DB:Extended --era Run2_2018 --filein file:/uscms/home/sthayil/nobackup/pseudoaxions/cmssw_SignalGeneration_Pseudoaxions/2017_ttPhiPS_M-500/split_lhe/splitLHE_0.lhe --fileout file:step0.root --python_filename GEN_2018_cfg.py -n 1
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ("python")
@@ -30,7 +30,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-        input = cms.untracked.int32(options.numEvents)
+    input = cms.untracked.int32(options.numEvents)
 )
 
 # Input source
@@ -62,7 +62,7 @@ process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
         filterName = cms.untracked.string('')
     ),
     eventAutoFlushCompressedSize = cms.untracked.int32(20971520),
-    fileName = cms.untracked.string(options.outputFile),
+                                        fileName = cms.untracked.string(options.outputFile),
     outputCommands = process.RAWSIMEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
@@ -72,50 +72,50 @@ process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
 # Other statements
 process.genstepfilter.triggerConditions=cms.vstring("generation_step")
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '106X_upgrade2018_realistic_v15_L1v1', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '106X_upgrade2018_realistic_v4', '')
 
 #54 (for steffie's signal)
 if options.hadronizer =="54":
         process.generator = cms.EDFilter("Pythia8HadronizerFilter",
             PythiaParameters = cms.PSet(
                 parameterSets = cms.vstring(
-                    'pythia8CommonSettings', 
-                    'pythia8CUEP8M1Settings', 
+                    'pythia8CommonSettings',
+                    'pythia8CUEP8M1Settings',
                     'processParameters'
                 ),
                 processParameters = cms.vstring(
-                    '54:new', 
-                    '54:name = pomega_bsm', 
-                    '54:spinType = 1', 
-                    '54:chargeType = 0', 
-                    '54:colType = 0', 
-                    '54:mayDecay = true', 
-                    '54:addChannel = 1 0.3931181 0 22 22', 
-                    '54:addChannel = 1 0.3257150 0 111 111 111', 
-                    '54:addChannel = 1 0.0002700 0 111 22 22', 
-                    '54:addChannel = 1 0.2274105 0 211 -211 111', 
-                    '54:addChannel = 1 0.0460021 0 211 -211 22', 
-                    '54:addChannel = 1 0.0069003 11 22 11 -11', 
-                    '54:addChannel = 1 0.0003100 11 22 13 -13', 
-                    '54:addChannel = 1 0.0000060 0 13 -13', 
+                    '54:new',
+                    '54:name = pomega_bsm',
+                    '54:spinType = 1',
+                    '54:chargeType = 0',
+                    '54:colType = 0',
+                    '54:mayDecay = true',
+                    '54:addChannel = 1 0.3931181 0 22 22',
+                    '54:addChannel = 1 0.3257150 0 111 111 111',
+                    '54:addChannel = 1 0.0002700 0 111 22 22',
+                    '54:addChannel = 1 0.2274105 0 211 -211 111',
+                    '54:addChannel = 1 0.0460021 0 211 -211 22',
+                    '54:addChannel = 1 0.0069003 11 22 11 -11',
+                    '54:addChannel = 1 0.0003100 11 22 13 -13',
+                    '54:addChannel = 1 0.0000060 0 13 -13',
                     '54:addChannel = 1 0.0002680 12 211 -211 11 -11'
                 ),
                 pythia8CUEP8M1Settings = cms.vstring(
-                    'Tune:pp 14', 
-                    'Tune:ee 7', 
-                    'MultipartonInteractions:pT0Ref=2.4024', 
-                    'MultipartonInteractions:ecmPow=0.25208', 
+                    'Tune:pp 14',
+                    'Tune:ee 7',
+                    'MultipartonInteractions:pT0Ref=2.4024',
+                    'MultipartonInteractions:ecmPow=0.25208',
                     'MultipartonInteractions:expPow=1.6'
                 ),
                 pythia8CommonSettings = cms.vstring(
-                    'Tune:preferLHAPDF = 2', 
-                    'Main:timesAllowErrors = 10000', 
-                    'Check:epTolErr = 0.01', 
-                    'Beams:setProductionScalesFromLHEF = off', 
-                    'SLHA:keepSM = on', 
-                    'SLHA:minMassSM = 1000.', 
-                    'ParticleDecays:limitTau0 = on', 
-                    'ParticleDecays:tau0Max = 10', 
+                    'Tune:preferLHAPDF = 2',
+                    'Main:timesAllowErrors = 10000',
+                    'Check:epTolErr = 0.01',
+                    'Beams:setProductionScalesFromLHEF = off',
+                    'SLHA:keepSM = on',
+                    'SLHA:minMassSM = 1000.',
+                    'ParticleDecays:limitTau0 = on',
+                    'ParticleDecays:tau0Max = 10',
                     'ParticleDecays:allowPhotonRadiation = on'
                 )
             ),
@@ -131,43 +131,43 @@ elif options.hadronizer =="54_twoprongdecay":
         process.generator = cms.EDFilter("Pythia8HadronizerFilter",
             PythiaParameters = cms.PSet(
                 parameterSets = cms.vstring(
-                    'pythia8CommonSettings', 
-                    'pythia8CUEP8M1Settings', 
+                    'pythia8CommonSettings',
+                    'pythia8CUEP8M1Settings',
                     'processParameters'
                 ),
                 processParameters = cms.vstring(
-                    '54:new', 
-                    '54:name = pomega_bsm', 
-                    '54:spinType = 1', 
-                    '54:chargeType = 0', 
-                    '54:colType = 0', 
-                    '54:mayDecay = true', 
-#                    '54:addChannel = 1 0.3931181 0 22 22', 
-#                    '54:addChannel = 1 0.3257150 0 111 111 111', 
-#                    '54:addChannel = 1 0.0002700 0 111 22 22', 
-                    '54:addChannel = 1 0.2274105 0 211 -211 111', 
-                    '54:addChannel = 1 0.0460021 0 211 -211 22', 
-#                    '54:addChannel = 1 0.0069003 11 22 11 -11', 
-#                    '54:addChannel = 1 0.0003100 11 22 13 -13', 
-#                    '54:addChannel = 1 0.0000060 0 13 -13', 
+                    '54:new',
+                    '54:name = pomega_bsm',
+                    '54:spinType = 1',
+                    '54:chargeType = 0',
+                    '54:colType = 0',
+                    '54:mayDecay = true',
+#                    '54:addChannel = 1 0.3931181 0 22 22',
+#                    '54:addChannel = 1 0.3257150 0 111 111 111',
+#                    '54:addChannel = 1 0.0002700 0 111 22 22',
+                    '54:addChannel = 1 0.2274105 0 211 -211 111',
+                    '54:addChannel = 1 0.0460021 0 211 -211 22',
+#                    '54:addChannel = 1 0.0069003 11 22 11 -11',
+#                    '54:addChannel = 1 0.0003100 11 22 13 -13',
+#                    '54:addChannel = 1 0.0000060 0 13 -13',
 #                    '54:addChannel = 1 0.0002680 12 211 -211 11 -11'
                 ),
                 pythia8CUEP8M1Settings = cms.vstring(
-                    'Tune:pp 14', 
-                    'Tune:ee 7', 
-                    'MultipartonInteractions:pT0Ref=2.4024', 
-                    'MultipartonInteractions:ecmPow=0.25208', 
+                    'Tune:pp 14',
+                    'Tune:ee 7',
+                    'MultipartonInteractions:pT0Ref=2.4024',
+                    'MultipartonInteractions:ecmPow=0.25208',
                     'MultipartonInteractions:expPow=1.6'
                 ),
                 pythia8CommonSettings = cms.vstring(
-                    'Tune:preferLHAPDF = 2', 
-                    'Main:timesAllowErrors = 10000', 
-                    'Check:epTolErr = 0.01', 
-                    'Beams:setProductionScalesFromLHEF = off', 
-                    'SLHA:keepSM = on', 
-                    'SLHA:minMassSM = 1000.', 
-                    'ParticleDecays:limitTau0 = on', 
-                    'ParticleDecays:tau0Max = 10', 
+                    'Tune:preferLHAPDF = 2',
+                    'Main:timesAllowErrors = 10000',
+                    'Check:epTolErr = 0.01',
+                    'Beams:setProductionScalesFromLHEF = off',
+                    'SLHA:keepSM = on',
+                    'SLHA:minMassSM = 1000.',
+                    'ParticleDecays:limitTau0 = on',
+                    'ParticleDecays:tau0Max = 10',
                     'ParticleDecays:allowPhotonRadiation = on'
                 )
             ),
@@ -183,8 +183,8 @@ elif options.hadronizer =="90000054":
         process.generator = cms.EDFilter("Pythia8HadronizerFilter",
             PythiaParameters = cms.PSet(
                 parameterSets = cms.vstring(
-                    'pythia8CommonSettings', 
-                    'pythia8CUEP8M1Settings', 
+                    'pythia8CommonSettings',
+                    'pythia8CUEP8M1Settings',
                     'processParameters'
                 ),
                 processParameters = cms.vstring(
@@ -206,21 +206,21 @@ elif options.hadronizer =="90000054":
                     '90000054:addChannel = 1 0.0002680 12 211 -211 11 -11'
                     ),
                 pythia8CUEP8M1Settings = cms.vstring(
-                    'Tune:pp 14', 
-                    'Tune:ee 7', 
-                    'MultipartonInteractions:pT0Ref=2.4024', 
-                    'MultipartonInteractions:ecmPow=0.25208', 
+                    'Tune:pp 14',
+                    'Tune:ee 7',
+                    'MultipartonInteractions:pT0Ref=2.4024',
+                    'MultipartonInteractions:ecmPow=0.25208',
                     'MultipartonInteractions:expPow=1.6'
                 ),
                 pythia8CommonSettings = cms.vstring(
-                    'Tune:preferLHAPDF = 2', 
-                    'Main:timesAllowErrors = 10000', 
-                    'Check:epTolErr = 0.01', 
-                    'Beams:setProductionScalesFromLHEF = off', 
-                    'SLHA:keepSM = on', 
-                    'SLHA:minMassSM = 1000.', 
-                    'ParticleDecays:limitTau0 = on', 
-                    'ParticleDecays:tau0Max = 10', 
+                    'Tune:preferLHAPDF = 2',
+                    'Main:timesAllowErrors = 10000',
+                    'Check:epTolErr = 0.01',
+                    'Beams:setProductionScalesFromLHEF = off',
+                    'SLHA:keepSM = on',
+                    'SLHA:minMassSM = 1000.',
+                    'ParticleDecays:limitTau0 = on',
+                    'ParticleDecays:tau0Max = 10',
                     'ParticleDecays:allowPhotonRadiation = on'
                 )
             ),
@@ -231,7 +231,7 @@ elif options.hadronizer =="90000054":
             pythiaPylistVerbosity = cms.untracked.int32(1)
         )
 
-else: 
+else:
         print "ERROR: No valid hadronizer chosen. Exiting..."
         print options.hadronizer
         exit()
@@ -250,8 +250,7 @@ from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 # filter all path with the production filter sequence
 for path in process.paths:
-	getattr(process,path).insert(0, process.ProductionFilterSequence)
-
+        getattr(process,path).insert(0, process.ProductionFilterSequence)
 
 # Customisation from command line
 

@@ -236,6 +236,8 @@ else:
         print options.hadronizer
         exit()
 
+process.ProductionFilterSequence = cms.Sequence(process.generator)
+
 # Path and EndPath definitions
 process.generation_step = cms.Path(process.pgen)
 process.genfiltersummary_step = cms.EndPath(process.genFilterSummary)
@@ -247,6 +249,9 @@ process.schedule = cms.Schedule(process.generation_step,process.genfiltersummary
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
+# filter all path with the production filter sequence
+for path in process.paths:
+        getattr(process,path).insert(0, process.ProductionFilterSequence)
 
 # Customisation from command line
 

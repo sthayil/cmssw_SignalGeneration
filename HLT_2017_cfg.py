@@ -4,6 +4,7 @@
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: step4 --mc --eventcontent RAWSIM --datatier GEN-SIM-RAW --conditions 94X_mc2017_realistic_v15 --customise_commands process.source.bypassVersionCheck = cms.untracked.bool(True) --step HLT:2e34v40 --nThreads 8 --geometry DB:Extended --era Run2_2017 --filein file:DIGIPremix.root --fileout file:HLT.root --python_filename HLT_2017_cfg.py -n 1 --no_exec
 import FWCore.ParameterSet.Config as cms
+from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ("python")
 options.register("inputFile", "file:DIGIPremix.root", VarParsing.multiplicity.singleton, VarParsing.varType.string, "")
 options.register("numEvents", -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "")
