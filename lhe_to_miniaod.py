@@ -19,15 +19,15 @@ if os.path.isdir(ops.inputLheLocation):
         if file.endswith(".lhe"):
             inputlhes.append(os.path.join(ops.inputLheLocation, file))
     if len(inputlhes)==0: 
-        print "ERROR: no .lhe files in supplied input directory"
+        print("ERROR: no .lhe files in supplied input directory")
         exit()
 elif os.path.isfile(ops.inputLheLocation): 
     if (ops.inputLheLocation).endswith(".lhe"): inputlhes.append(ops.inputLheLocation)
     else: 
-        print "ERROR: supplied input file is not a .lhe"
+        print( "ERROR: supplied input file is not a .lhe")
         exit()
 else: 
-    print "ERROR: supplied input is neither a .lhe nor a directory"
+    print( "ERROR: supplied input is neither a .lhe nor a directory")
     exit()
 
 basedir=os.getcwd()
@@ -45,12 +45,12 @@ for inputlhe in inputlhes:
         if os.path.isdir(ops.outputDirectory):
             if not ( (ops.outputDirectory).startswith("/") ): prefix=os.getcwd()+"/"
         else:
-            print "provided output directory does not exist, trying to create..."
+            print( "provided output directory does not exist, trying to create...")
             if not ( (ops.outputDirectory).startswith("/") ): prefix=os.getcwd()+"/"
             os.system('mkdir -p '+ops.outputDirectory)
-            print "created directory: "+prefix+ops.outputDirectory
+            print( "created directory: "+prefix+ops.outputDirectory)
         #make dir for this specific job
-        if os.path.isdir(ops.outputDirectory+'/'+fulljobname): print "WARNING: directory named "+ops.outputDirectory+'/'+fulljobname+" already exists, files will be overwritten"
+        if os.path.isdir(ops.outputDirectory+'/'+fulljobname): print( "WARNING: directory named "+ops.outputDirectory+'/'+fulljobname+" already exists, files will be overwritten")
         else: os.system('mkdir -p '+ops.outputDirectory+'/'+fulljobname)
 
     elif ".fnal.gov" in hostname: 
@@ -60,7 +60,7 @@ for inputlhe in inputlhes:
         #     os.system('eos root://cmseos.fnal.gov mkdir -p '+ops.outputDirectory+'/'+fulljobname)
         else:
             #print "ERROR: for output directory, specify an EOS path starting in /store/user/ or /eos/uscms/store/user/"
-            print "ERROR: for output directory, specify an EOS path starting in /store/user/"
+            print( "ERROR: for output directory, specify an EOS path starting in /store/user/")
             exit()
         prefix="root://cmseos.fnal.gov//" 
     outputDir=prefix+ops.outputDirectory+'/'+fulljobname
@@ -69,12 +69,12 @@ for inputlhe in inputlhes:
     if not os.path.isdir(fulljobname+'/split_lhe'): os.system('mkdir '+fulljobname+'/split_lhe')
     os.system('cp splitLHE.py '+fulljobname)
     if len(os.listdir(fulljobname+'/split_lhe')) == ops.nJobFiles:
-        print "Split files already present, using them"
+        print( "Split files already present, using them")
     else:
         if len(os.listdir(fulljobname+'/split_lhe')) !=0: os.system('rm '+fulljobname+'/split_lhe/*')
-        print "Splitting lhe..."
+        print( "Splitting lhe...")
         os.system('python '+fulljobname+'/splitLHE.py '+inputlhe+' '+fulljobname+'/split_lhe/splitLHE_ '+str(ops.nJobFiles))
-        if len(os.listdir(fulljobname+'/split_lhe')) == ops.nJobFiles: print "Splitting done"
+        if len(os.listdir(fulljobname+'/split_lhe')) == ops.nJobFiles: print( "Splitting done")
 
     #set up other directories
     os.chdir(fulljobname)
@@ -106,7 +106,7 @@ for inputlhe in inputlhes:
     os.system('cp ../HLT_'+ops.year+'_cfg.py .')
     os.system('cp ../RECO_'+ops.year+'_cfg.py .')
     os.system('cp ../MINIAOD_'+ops.year+'_cfg.py .')
-    print "Submitting jobs with condor_submit condorsubmit_lhetominiaod_"+mytimestr+".jdl ..."
+    print( "Submitting jobs with condor_submit condorsubmit_lhetominiaod_"+mytimestr+".jdl ...")
     os.system('condor_submit condorsubmit_lhetominiaod_'+mytimestr+'.jdl')
     os.system('mv condorsubmit_lhetominiaod_'+mytimestr+'.jdl jdl_files/')
 

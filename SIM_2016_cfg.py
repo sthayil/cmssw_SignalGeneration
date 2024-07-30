@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: step1 --mc --eventcontent RAWSIM --runUnscheduled --datatier GEN-SIM --conditions 106X_upgrade2018_realistic_v11_L1v1 --beamspot Realistic25ns13TeVEarly2018Collision --step SIM --nThreads 8 --geometry DB:Extended --era Run2_2018 --filein file:GEN_2018.root --fileout file:step0.root --python_filename SIM_2018_cfg.py -n 1
+# with command line options: step1 --mc --eventcontent RAWSIM --runUnscheduled --datatier GEN-SIM --conditions 106X_mcRun2_asymptotic_v13 --beamspot Realistic25ns13TeV2016Collision --step SIM --nThreads 8 --geometry DB:Extended --era Run2_2016 --filein file:GEN_2016.root --fileout file:SIM_2016.root --python_filename SIM_2016_cfg.py -n 1
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ("python")
@@ -10,9 +10,10 @@ options.register("inputFile", "file:GEN.root", VarParsing.multiplicity.singleton
 options.register("numEvents", -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "")
 options.setDefault("outputFile", "file:SIM.root")
 options.parseArguments()
-from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
 
-process = cms.Process('SIM',Run2_2018)
+from Configuration.Eras.Era_Run2_2016_cff import Run2_2016
+
+process = cms.Process('SIM',Run2_2016)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -33,7 +34,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring(options.inputFile),
+    fileNames = cms.untracked.vstring(options.inputFile),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -58,7 +59,7 @@ process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
         filterName = cms.untracked.string('')
     ),
     eventAutoFlushCompressedSize = cms.untracked.int32(20971520),
-                                        fileName = cms.untracked.string(options.outputFile),
+    fileName = cms.untracked.string(options.outputFile),
     outputCommands = process.RAWSIMEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
@@ -68,7 +69,7 @@ process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
 # Other statements
 process.XMLFromDBSource.label = cms.string("Extended")
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '106X_upgrade2018_realistic_v11_L1v1', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '106X_mcRun2_asymptotic_v13', '')
 
 # Path and EndPath definitions
 process.simulation_step = cms.Path(process.psim)
