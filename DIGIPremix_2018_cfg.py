@@ -1,5 +1,5 @@
 # Auto generated configuration file
-41;2500;0c# using: 
+# using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: step1 --mc --eventcontent PREMIXRAW --runUnscheduled --datatier GEN-SIM-DIGI --conditions 106X_upgrade2018_realistic_v11_L1v1 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --nThreads 8 --geometry DB:Extended --datamix PreMix --era Run2_2018 --filein file:SIM_2018.root --fileout file:DIGIPremix_2018.root --python_filename test_DIGIPremix_2018_cfg.py -n 1
