@@ -9,7 +9,7 @@ pwd
 
 printf "\n\n"
 printf "\n$1 : file number"
-printf "\n$2 : year (2016/2017/2018)"
+printf "\n$2 : year (2016/2016APV/2017/2018)"
 printf "\n$3 : hadronizer"
 printf "\n$4 : numEvents to run over"
 printf "\n$5 : outputDir to xrdcp to\n"
@@ -47,7 +47,7 @@ if [[ "$2" == "2018" ]]; then
     cmsswver="CMSSW_10_2_16_UL"
 elif [[ "$2" == "2017" ]]; then
     cmsswver="CMSSW_9_4_14_UL_patch1"
-elif [[ "$2" == "2016" ]]; then
+elif [[ "$2" == "2016" || "$2" == "2016APV" ]]; then
     cmsswver="CMSSW_8_0_33_UL"
 else
     printf "Unknown year! Exiting..."

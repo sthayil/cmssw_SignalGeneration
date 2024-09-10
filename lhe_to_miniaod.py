@@ -5,7 +5,7 @@ import os, glob, sys, argparse, socket
 from datetime import datetime
 options = argparse.ArgumentParser(description="Sets up a run to generate miniAODs from signal .lhe files")
 options.add_argument("-j", "--jobName",          required=True, help="Descriptive jobname, used for filenames and directories")
-options.add_argument("-y", "--year",             required=True, help="Used to select relevant config files", choices=['2016','2017','2018'])
+options.add_argument("-y", "--year",             required=True, help="Used to select relevant config files", choices=['2016','2016APV','2017','2018'])
 options.add_argument("-i", "--inputLheLocation", required=True, help="Input LHE filepath (either a specific file or a directory containing multiple .lhe files)")
 options.add_argument("-f", "--nJobFiles",        required=True, help="Number of files to split the input .lhe into",type=int)
 options.add_argument("-o", "--outputDirectory",  required=True, help="Output base directory filepath for jobs. Should be an EOS area.")
