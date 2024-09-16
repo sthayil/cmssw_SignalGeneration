@@ -15,7 +15,7 @@ cd cmssw_SignalGeneration_Pseudoaxions
 
 Then, 
 ```
-python lhe_to_miniaod.py [-h] -j JOBNAME -y {2016,2017,2018} -i INPUTLHELOCATION -f NJOBFILES -o OUTPUTDIRECTORY -p {54,90000054} [-n [NEVENTS]]
+python lhe_to_miniaod.py [-h] -j JOBNAME -y {2016,2017,2018} -i INPUTLHELOCATION -f NJOBFILES -o OUTPUTDIRECTORY -p {54,90000054,54_twoprongdecay} [-n [NEVENTS]]
 ```
 
 The arguments are:
@@ -33,3 +33,14 @@ For example, doing
 python lhe_to_miniaod.py -j ttPhiPS_M-500 -y 2018 -i /cms/thayil/pseudoaxions/CMSSW_10_6_19/src/ttPhiPS_M-500 -o /cms/thayil/pseudoaxions/pseudoaxions_files/miniAODs/ -f 100 -p 54
 ```
 will read the .lhe file(s) in /cms/thayil/pseudoaxions/CMSSW_10_6_19/src/ttPhiPS_M-500, process them as 2018 MC, and output 100 miniAODs to /cms/thayil/pseudoaxions/pseudoaxions_files/miniAODs/ttPhiPS_M-500/
+
+Some utilities:
+
+```python check_condor_logs.py <base directory>```
+See if jobs failed or finished with non-0 exit codes
+
+```python missingfiles_updated.py <eos dir> <#files expected>, eg: /eos/uscms/store/user/lpcrutgers/sthayil/pseudoaxions/mini/2018_ttPhiPS_M-3000/ 100```
+See if any output files are missing (searches for up to provided number, or max filenumber found in the directory if that is higher).
+
+```python resubmit_failed_jobs.py <base directory> <job numbers (comma separated)>```
+Use to resubmit jobs that failed or are otherwise missing.
