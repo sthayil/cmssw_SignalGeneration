@@ -21,6 +21,10 @@ eval `scramv1 runtime -sh`
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
 
+lhelocfile="splitLHE_$1.txt"
+lheline=$(cat "$lhelocfile")
+xrdcp root://cmseos.fnal.gov//"$lheline" .
+
 printf "\n\nDoing LHE > GEN\n"
 cmsRun GEN_$2_cfg.py inputFile=file:splitLHE_$1.lhe hadronizer=$3 numEvents=$4
 ls -lah 

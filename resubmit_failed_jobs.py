@@ -75,6 +75,7 @@ def main(base_dir, job_numbers):
                     temp_file.write(jdl_content_with_job)
 
                 # Submit the job
+                #os.system('cd '+)
                 try:
                     os.system('condor_submit '+temp_jdl_path)
                 except Exception as e:

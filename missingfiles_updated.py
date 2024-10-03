@@ -12,7 +12,7 @@ filenums = []
 lines = filelist_output.splitlines()
 
 for line in lines:
-    # if line.startswith('NANOAOD'): # Uncomment to check for NANOAOD
+    #if line.startswith('NANOAOD'): # Uncomment to check for NANOAOD
     if line.startswith('miniAOD'):  # Check for miniAOD_*.root, for example
         # Extract digits from the filename
         filenum = int(''.join(filter(str.isdigit, line)))

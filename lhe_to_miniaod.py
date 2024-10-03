@@ -1,15 +1,23 @@
 # use condor to make miniAODs from signal .lhes
 # usage: python lhe_to_miniaod.py -j ttPhiPS_M-500 -y 2018 -i /cms/thayil/pseudoaxions/CMSSW_10_6_19/src/ttPhiPS_M-500 -o /cms/thayil/pseudoaxions/pseudoaxions_files/miniAODs/ -f 100 -p 54
+# python lhe_to_miniaod.py -y 2018 -i /eos/uscms/store/user/lpcrutgers/sthayil/pseudoaxions/lhe/M-3000.lhe -o /store/user/lpcrutgers/sthayil/pseudoaxions/mini/ -f 200 -p 54_twoprongdecay
 
 import os, glob, sys, argparse, socket
 from datetime import datetime
+
+def strip_prefix(input_string):
+    prefix = "/eos/uscms"
+    if input_string.startswith(prefix):
+        return input_string[len(prefix):]
+    return input_string
+
 options = argparse.ArgumentParser(description="Sets up a run to generate miniAODs from signal .lhe files")
-options.add_argument("-j", "--jobName",          required=True, help="Descriptive jobname, used for filenames and directories")
+#options.add_argument("-j", "--jobName", const=-1, type=int, default=-1,  help="Descriptive jobname, used for filenames and directories")
 options.add_argument("-y", "--year",             required=True, help="Used to select relevant config files", choices=['2016','2016APV','2017','2018'])
-options.add_argument("-i", "--inputLheLocation", required=True, help="Input LHE filepath (either a specific file or a directory containing multiple .lhe files)")
+options.add_argument("-i", "--inputLheLocation", required=True,  help="Input LHE filepath (either a specific file or a directory containing multiple .lhe files)")
 options.add_argument("-f", "--nJobFiles",        required=True, help="Number of files to split the input .lhe into",type=int)
 options.add_argument("-o", "--outputDirectory",  required=True, help="Output base directory filepath for jobs. Should be an EOS area.")
-options.add_argument("-p", "--pythiaHadronizer", required=True, help="Hadronizer to be used in GEN step", choices=['54','90000054', '54_twoprongdecay'])
+options.add_argument("-p", "--pythiaHadronizer", required=True, help="Hadronizer to be used in GEN step", choices=['54','90000054', '54_twoprongdecay', '54_eta_nonphotonic', '54_etaprime'])
 options.add_argument("-n", "--nEvents",          nargs='?',     help="Number of events to run over for each split lhe (defaults to -1 (all))", const=-1, type=int, default=-1)
 ops = options.parse_args()
 
@@ -30,14 +38,22 @@ else:
     print( "ERROR: supplied input is neither a .lhe nor a directory")
     exit()
 
-basedir=os.getcwd()
+#hadronizer suffix
+if ops.pythiaHadronizer == "54_eta_nonphotonic": suffix = "-eta"
+elif ops.pythiaHadronizer == "54_etaprime": suffix = "-etaprime"
+else: suffix =""
+
+homebasedir=os.getcwd()
 totallhecnt=len(inputlhes)
 for inputlhe in inputlhes:
     #make a directory named 'fulljobname' for each lhe file to contain the split lhe, condor logs etc
-    fulljobname=ops.jobName
-    if totallhecnt>1: fulljobname=ops.jobName+"_"+os.path.splitext(os.path.basename(inputlhe))[0]
+    if os.path.isdir(ops.inputLheLocation): inputlhedir=ops.inputLheLocation
+    elif os.path.isfile(ops.inputLheLocation): inputlhedir=os.path.dirname(ops.inputLheLocation)
+    basedir=os.path.splitext(os.path.basename(inputlhe))[0]
+    fulljobname=ops.year+'_'+basedir+suffix
+    # if totallhecnt>1: fulljobname=ops.jobName+"_"+os.path.splitext(os.path.basename(inputlhe))[0]
     if not os.path.isdir(fulljobname): os.system('mkdir '+fulljobname)
-
+    
     #make separate output directories for each input lhe
     hostname = socket.gethostname()
     prefix=""
@@ -54,27 +70,57 @@ for inputlhe in inputlhes:
         else: os.system('mkdir -p '+ops.outputDirectory+'/'+fulljobname)
 
     elif ".fnal.gov" in hostname: 
-        if (ops.outputDirectory).startswith("/store/user/"): 
-            os.system('eos root://cmseos.fnal.gov mkdir -p '+ops.outputDirectory+'/'+fulljobname)
-        # elif (ops.outputDirectory).startswith("/eos/uscms/store/user/") : #this wont work with the prefix bit; fix---------------
-        #     os.system('eos root://cmseos.fnal.gov mkdir -p '+ops.outputDirectory+'/'+fulljobname)
+        if ( strip_prefix(ops.outputDirectory) ).startswith("/store/user/"): 
+            os.system('eos root://cmseos.fnal.gov mkdir -p '+ strip_prefix(ops.outputDirectory) +'/'+fulljobname)
         else:
-            #print "ERROR: for output directory, specify an EOS path starting in /store/user/ or /eos/uscms/store/user/"
-            print( "ERROR: for output directory, specify an EOS path starting in /store/user/")
+            print( "ERROR: for output directory, specify an EOS path starting in /store/user/ or /eos/uscms/store/user/")
             exit()
         prefix="root://cmseos.fnal.gov//" 
-    outputDir=prefix+ops.outputDirectory+'/'+fulljobname
+    outputDir=prefix+strip_prefix(ops.outputDirectory)+'/'+fulljobname
 
     #split lhe
-    if not os.path.isdir(fulljobname+'/split_lhe'): os.system('mkdir '+fulljobname+'/split_lhe')
-    os.system('cp splitLHE.py '+fulljobname)
-    if len(os.listdir(fulljobname+'/split_lhe')) == ops.nJobFiles:
-        print( "Split files already present, using them")
-    else:
-        if len(os.listdir(fulljobname+'/split_lhe')) !=0: os.system('rm '+fulljobname+'/split_lhe/*')
-        print( "Splitting lhe...")
-        os.system('python '+fulljobname+'/splitLHE.py '+inputlhe+' '+fulljobname+'/split_lhe/splitLHE_ '+str(ops.nJobFiles))
-        if len(os.listdir(fulljobname+'/split_lhe')) == ops.nJobFiles: print( "Splitting done")
+    if ".fnal.gov" in hostname:
+        #if lhes are on eos, make split lhes also on eos
+        if ( strip_prefix(inputlhedir).startswith("/store/user/") ):
+            os.system('eos root://cmseos.fnal.gov mkdir -p '+ strip_prefix(inputlhedir) +'/split_lhe/'+basedir )
+            if len( os.listdir('/eos/uscms/' + strip_prefix(inputlhedir)+'/split_lhe/'+basedir )) == ops.nJobFiles:
+                print("Split files already present, using them")
+
+            elif len( os.listdir( '/eos/uscms/' + strip_prefix(inputlhedir)+'/split_lhe/'+basedir ) ) !=0 :
+                print('Some split files present but not the desired number, check: /eos/uscms/' + strip_prefix(inputlhedir)+'/split_lhe/'+basedir )
+                exit()
+
+            else:
+                #split lhe and copy back to eos
+                print( "Splitting lhe...")
+                os.system('mkdir '+basedir)
+                os.system('python splitLHE.py '+inputlhe+' '+basedir+'/splitLHE_ '+str(ops.nJobFiles))
+                os.system('xrdcp -r '+basedir+' root://cmseos.fnal.gov/'+strip_prefix(inputlhedir)+'/split_lhe/')
+                if len( os.listdir('/eos/uscms/' + strip_prefix(inputlhedir)+'/split_lhe/'+basedir) ) == ops.nJobFiles:
+                    print( "Splitting done and files copied to eos")
+
+            #make a txt file (to ship w job) with each inputfile
+            if not os.path.isdir(fulljobname+'/split_lhe'): os.system('mkdir '+fulljobname+'/split_lhe')
+            for i in range(ops.nJobFiles):
+                file_path = os.path.join(fulljobname, 'split_lhe', f'splitLHE_{i}.txt')
+                content = strip_prefix(inputlhedir) + '/split_lhe/' + basedir +'/'+ f'splitLHE_{i}.lhe'
+                with open(file_path, 'w') as f:
+                    f.write(content)
+            print( "EOS split .lhe locations specified in job/split_lhe/splitLHE_X.lhe")
+
+        else: #local input lhes
+            print("Doesn't work with local input files at the moment")
+            exit()
+            # print(ops.inputLheLocation)
+            # if not os.path.isdir(fulljobname+'/split_lhe'): os.system('mkdir '+fulljobname+'/split_lhe')
+            # os.system('cp splitLHE.py '+fulljobname)
+            # if len(os.listdir(fulljobname+'/split_lhe')) == ops.nJobFiles:
+            #     print( "Split files already present, using them")
+            # else:
+            #     if len(os.listdir(fulljobname+'/split_lhe')) !=0: os.system('rm '+fulljobname+'/split_lhe/*')
+            #     print( "Splitting lhe...")
+            #     os.system('python '+fulljobname+'/splitLHE.py '+inputlhe+' '+fulljobname+'/split_lhe/splitLHE_ '+str(ops.nJobFiles))
+            #     if len(os.listdir(fulljobname+'/split_lhe')) == ops.nJobFiles: print( "Splitting done")
 
     #set up other directories
     os.chdir(fulljobname)
@@ -111,5 +157,5 @@ for inputlhe in inputlhes:
     os.system('condor_submit condorsubmit_lhetominiaod_'+mytimestr+'.jdl')
     os.system('mv condorsubmit_lhetominiaod_'+mytimestr+'.jdl jdl_files/')
 
-    os.chdir(basedir)
+    os.chdir(homebasedir)
     
