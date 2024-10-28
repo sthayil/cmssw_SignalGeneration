@@ -97,7 +97,7 @@ for inputlhe in inputlhes:
                 os.system('python splitLHE.py '+inputlhe+' '+basedir+'/splitLHE_ '+str(ops.nJobFiles))
                 os.system('xrdcp -r '+basedir+' root://cmseos.fnal.gov/'+strip_prefix(inputlhedir)+'/split_lhe/')
                 if len( os.listdir('/eos/uscms/' + strip_prefix(inputlhedir)+'/split_lhe/'+basedir) ) == ops.nJobFiles:
-                    print( "Splitting done and files copied to eos")
+                    print( "Splitting done and files copied to eos; remember to delete temp dir: "+basedir)
 
             #make a txt file (to ship w job) with each inputfile
             if not os.path.isdir(fulljobname+'/split_lhe'): os.system('mkdir '+fulljobname+'/split_lhe')
