@@ -16,9 +16,10 @@ options = argparse.ArgumentParser(description="Sets up a run to generate miniAOD
 options.add_argument("-y", "--year",             required=True, help="Used to select relevant config files", choices=['2016','2016APV','2017','2018'])
 options.add_argument("-i", "--inputLheLocation", required=True,  help="Input LHE filepath (either a specific file or a directory containing multiple .lhe files)")
 options.add_argument("-f", "--nJobFiles",        required=True, help="Number of files to split the input .lhe into",type=int)
-options.add_argument("-o", "--outputDirectory",  required=True, help="Output base directory filepath for jobs. Should be an EOS area.")
-options.add_argument("-p", "--pythiaHadronizer", required=True, help="Hadronizer to be used in GEN step", choices=['54','90000054', '54_twoprongdecay', '54_eta_nonphotonic', '54_etaprime'])
+options.add_argument("-o", "--outputDirectory",  required=True, help="Output base directory filepath for jobs. Should be an EOS area if on LPC.")
+options.add_argument("-p", "--pythiaHadronizer", required=True, help="Hadronizer to be used in GEN step", choices=['54','90000054', '54_twoprongdecay', '54_eta_nonphotonic', '54_etaprime', '90000054_etaprime'])
 options.add_argument("-n", "--nEvents",          nargs='?',     help="Number of events to run over for each split lhe (defaults to -1 (all))", const=-1, type=int, default=-1)
+options.add_argument("--splitOnly", action="store_true", default=False,help="Split .lhe(s) and quit")
 ops = options.parse_args()
 
 inputlhes=[]
@@ -122,10 +123,45 @@ for inputlhe in inputlhes:
             #     os.system('python '+fulljobname+'/splitLHE.py '+inputlhe+' '+fulljobname+'/split_lhe/splitLHE_ '+str(ops.nJobFiles))
             #     if len(os.listdir(fulljobname+'/split_lhe')) == ops.nJobFiles: print( "Splitting done")
 
+    elif "hexcms" in hostname: 
+        if ( strip_prefix(inputlhedir).startswith("/cms/thayil/pseudoaxions/pseudoaxions_files") ):
+            os.system('mkdir -p '+ strip_prefix(inputlhedir) +'/split_lhe/'+basedir )
+            if len( os.listdir(strip_prefix(inputlhedir)+'/split_lhe/'+basedir )) == ops.nJobFiles:
+                print("Split files already present, using them")
+
+            elif len( os.listdir(strip_prefix(inputlhedir)+'/split_lhe/'+basedir ) ) !=0 :
+                print('Some split files present but not the desired number, check: ' + strip_prefix(inputlhedir)+'/split_lhe/'+basedir )
+                exit()
+
+            else:
+                #split lhe and copy back to eos
+                print( "Splitting lhe...")
+                os.system('python3 splitLHE.py '+inputlhe+' '+strip_prefix(inputlhedir) +'/split_lhe/'+basedir+'/splitLHE_ '+str(ops.nJobFiles))
+                if len( os.listdir(strip_prefix(inputlhedir)+'/split_lhe/'+basedir) ) == ops.nJobFiles:
+                    print( "Splitting done; split files in: "+strip_prefix(inputlhedir) +'/split_lhe/'+basedir)
+
+            if ops.splitOnly:
+                print( "--splitOnly was selected. Exiting...")
+                exit()
+
+            #make a txt file (to ship w job) with each inputfile
+            if not os.path.isdir(fulljobname+'/split_lhe'): os.system('mkdir '+fulljobname+'/split_lhe')
+            for i in range(ops.nJobFiles):
+                file_path = os.path.join(fulljobname, 'split_lhe', f'splitLHE_{i}.txt')
+                content = strip_prefix(inputlhedir) + '/split_lhe/' + basedir +'/'+ f'splitLHE_{i}.lhe'
+                with open(file_path, 'w') as f:
+                    f.write(content)
+            print( "Split .lhe locations specified in job/split_lhe/splitLHE_X.lhe")
+
+        else: 
+            print("Put lhes in /cms/thayil/pseudoaxions/pseudoaxions_files/")
+            exit()
+            
     #set up other directories
     os.chdir(fulljobname)
     if not os.path.isdir('logs_from_condor'): os.system('mkdir logs_from_condor')
     if not os.path.isdir('jdl_files'): os.system('mkdir jdl_files')
+    if "hexcms" in hostname: os.system('cp /tmp/x509up_u775 ./x509up')
 
     #modify jdl
     mytime=datetime.now()
@@ -143,6 +179,7 @@ for inputlhe in inputlhes:
         file.write(filedata)
         
     #submit jobs
+    os.system('pwd')
     os.system('cp ../condorsubmit_lhetominiaod.sh .')
     os.system('cp ../RunIISummer20ULPrePremix-UL16_106X_mcRun2_asymptotic_v13-v1.list .')
     os.system('cp ../RunIISummer20ULPrePremix-UL17_106X_mc2017_realistic_v6-v3.list .')
