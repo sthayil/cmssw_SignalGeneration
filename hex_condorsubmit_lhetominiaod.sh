@@ -23,7 +23,7 @@ pwd
 
 lhelocfile="splitLHE_$1.txt"
 lheline=$(cat "$lhelocfile")
-xrdcp root://cmseos.fnal.gov//"$lheline" .
+cp "$lheline" .
 
 printf "\n\nDoing LHE > GEN\n"
 date

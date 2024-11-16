@@ -166,8 +166,12 @@ for inputlhe in inputlhes:
     #modify jdl
     mytime=datetime.now()
     mytimestr=mytime.strftime("%y%m%d%H")
-    with open('../condorsubmit_lhetominiaod.jdl', 'r') as file :
-        filedata = file.read()
+    if "hexcms" in hostname:
+        with open('../hex_condorsubmit_lhetominiaod.jdl', 'r') as file :
+            filedata = file.read()
+    else:
+        with open('../condorsubmit_lhetominiaod.jdl', 'r') as file :
+            filedata = file.read()
     filedata = filedata.replace('00000000', fulljobname)
     filedata = filedata.replace('11111111', mytimestr)
     filedata = filedata.replace('22222222', ops.year)
@@ -175,12 +179,15 @@ for inputlhe in inputlhes:
     filedata = filedata.replace('44444444', str(ops.nEvents))
     filedata = filedata.replace('55555555', outputDir)
     filedata = filedata.replace('66666666', str(ops.nJobFiles))
-    with open('condorsubmit_lhetominiaod_'+mytimestr+'.jdl', 'w') as file:
-        file.write(filedata)
+    if "hexcms" in hostname:
+        with open('hex_condorsubmit_lhetominiaod_'+mytimestr+'.jdl', 'w') as file:
+            file.write(filedata)
+    else:
+    	with open('condorsubmit_lhetominiaod_'+mytimestr+'.jdl', 'w') as file:
+            file.write(filedata)        
         
     #submit jobs
     os.system('pwd')
-    os.system('cp ../condorsubmit_lhetominiaod.sh .')
     os.system('cp ../RunIISummer20ULPrePremix-UL16_106X_mcRun2_asymptotic_v13-v1.list .')
     os.system('cp ../RunIISummer20ULPrePremix-UL17_106X_mc2017_realistic_v6-v3.list .')
     os.system('cp ../RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2.list .')
@@ -190,9 +197,14 @@ for inputlhe in inputlhes:
     os.system('cp ../HLT_'+ops.year+'_cfg.py .')
     os.system('cp ../RECO_'+ops.year+'_cfg.py .')
     os.system('cp ../MINIAOD_'+ops.year+'_cfg.py .')
-    print( "Submitting jobs with condor_submit condorsubmit_lhetominiaod_"+mytimestr+".jdl ...")
-    os.system('condor_submit condorsubmit_lhetominiaod_'+mytimestr+'.jdl')
-    os.system('mv condorsubmit_lhetominiaod_'+mytimestr+'.jdl jdl_files/')
+    if "hexcms" in hostname:    
+        print( "Submitting jobs with condor_submit hex_condorsubmit_lhetominiaod_"+mytimestr+".jdl ...")
+        os.system('condor_submit hex_condorsubmit_lhetominiaod_'+mytimestr+'.jdl')
+        os.system('mv hex_condorsubmit_lhetominiaod_'+mytimestr+'.jdl jdl_files/')
+    else:
+        print( "Submitting jobs with condor_submit condorsubmit_lhetominiaod_"+mytimestr+".jdl ...")
+        os.system('condor_submit condorsubmit_lhetominiaod_'+mytimestr+'.jdl')
+        os.system('mv condorsubmit_lhetominiaod_'+mytimestr+'.jdl jdl_files/')
 
     os.chdir(homebasedir)
     

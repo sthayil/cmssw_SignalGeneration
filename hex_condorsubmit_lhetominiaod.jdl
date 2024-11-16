@@ -1,0 +1,20 @@
+universe = vanilla
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el7:x86_64"
+#+DesiredOS="SL7"
+initialdir = .
+#use_x509userproxy = true
+x509userproxy      = ./x509up
+#$ENV(X509_USER_PROXY)
+error  = ./logs_from_condor/00000000_11111111_$(Process).out
+log    = ./logs_from_condor/00000000_11111111_$(Process).log
+output = ./logs_from_condor/00000000_11111111_$(Process).out
+executable = hex_condorsubmit_lhetominiaod.sh
+transfer_input_files = hex_condorsubmit_lhetominiaod.sh, GEN_22222222_cfg.py, SIM_22222222_cfg.py, DIGIPremix_22222222_cfg.py, HLT_22222222_cfg.py, RECO_22222222_cfg.py, MINIAOD_22222222_cfg.py, split_lhe/splitLHE_$(Process).txt, RunIISummer20ULPrePremix-UL16_106X_mcRun2_asymptotic_v13-v1.list, RunIISummer20ULPrePremix-UL17_106X_mc2017_realistic_v6-v3.list, RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2.list
+arguments = $(Process) 22222222 33333333 44444444 55555555
+Notification = never
+#request_memory = 4095
+#request_cpus = 8
+#max_materialize = 350
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+queue 66666666
