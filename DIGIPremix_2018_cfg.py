@@ -90,8 +90,11 @@ PU_files = f.readlines()
 f.close()
 PU_file = random.choice(PU_files)
 
+#os.system('xrdcp root://cmsxrootd.fnal.gov/'+PU_file+' .')
+
 # Other statements
 process.mixData.input.fileNames = cms.untracked.vstring(['file:root://cmsxrootd.fnal.gov/'+PU_file])
+#process.mixData.input.fileNames = cms.untracked.vstring(['file:'+PU_file])
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '106X_upgrade2018_realistic_v11_L1v1', '')
 
@@ -108,10 +111,10 @@ process.schedule = cms.Schedule(process.digitisation_step,process.datamixing_ste
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
-#Setup FWK for multithreaded
-process.options.numberOfThreads=cms.untracked.uint32(8)
-process.options.numberOfStreams=cms.untracked.uint32(0)
-process.options.numberOfConcurrentLuminosityBlocks=cms.untracked.uint32(1)
+# #Setup FWK for multithreaded
+# process.options.numberOfThreads=cms.untracked.uint32(8)
+# process.options.numberOfStreams=cms.untracked.uint32(0)
+# process.options.numberOfConcurrentLuminosityBlocks=cms.untracked.uint32(1)
 
 #do not add changes to your config after this point (unless you know what you are doing)
 from FWCore.ParameterSet.Utilities import convertToUnscheduled
