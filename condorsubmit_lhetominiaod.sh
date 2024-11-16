@@ -23,11 +23,14 @@ pwd
 
 lhelocfile="splitLHE_$1.txt"
 lheline=$(cat "$lhelocfile")
-xrdcp root://cmseos.fnal.gov//"$lheline" .
+#xrdcp root://cmseos.fnal.gov//"$lheline" .
+cp "$lheline" .
 
 printf "\n\nDoing LHE > GEN\n"
+date
 cmsRun GEN_$2_cfg.py inputFile=file:splitLHE_$1.lhe hadronizer=$3 numEvents=$4
 ls -lah 
+rm splitLHE_$1.lhe
 
 eval `scramv1 project CMSSW CMSSW_10_6_17_patch1`
 cd CMSSW_10_6_17_patch1/src
@@ -36,15 +39,19 @@ cd ${_CONDOR_SCRATCH_DIR}
 pwd
 
 printf "\n\nDoing GEN > SIM\n"
+date
 cmsRun SIM_$2_cfg.py
 ls -lah 
+rm GEN.root
 
 # xrdcp SIM.root $5/gensim_$1.root
 # xrdcp $5/gensim_$1.root SIM.root
 
 printf "\n\nDoing SIM > DIGI\n"
+date
 cmsRun DIGIPremix_$2_cfg.py
-ls -lah 
+ls -lah
+rm SIM.root
 
 #HLT
 if [[ "$2" == "2018" ]]; then
@@ -65,8 +72,10 @@ cd ${_CONDOR_SCRATCH_DIR}
 pwd
 
 printf "\n\nDoing DIGI > HLT\n"
+date
 cmsRun HLT_$2_cfg.py
 ls -lah 
+rm DIGIPremix.root
 
 #RECO, MINI
 cd CMSSW_10_6_17_patch1/src
@@ -75,16 +84,21 @@ cd ${_CONDOR_SCRATCH_DIR}
 pwd
 
 printf "\n\nDoing HLT > RECO\n"
+date
 cmsRun RECO_$2_cfg.py
-ls -lah 
+ls -lah
+rm HLT.root
 
 # xrdcp RECO.root $5/reco_$1.root
 # xrdcp $5/reco_$1.root RECO.root
 
 printf "\n\nDoing RECO > MINI\n"
+date
 cmsRun MINIAOD_$2_cfg.py outputFile=miniAOD_$1.root
-ls -lah 
+ls -lah
+rm RECO.root
 
 #Cleaning up
-xrdcp miniAOD_$1.root $5 
-rm splitLHE_$1.lhe GEN.root SIM.root DIGIPremix.root HLT.root RECO.root miniAOD_$1.root
+xrdcp miniAOD_$1.root $5 #also works on hex
+rm miniAOD_$1.root
+#rm splitLHE_$1.lhe GEN.root SIM.root DIGIPremix.root HLT.root RECO.root miniAOD_$1.root
