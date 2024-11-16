@@ -18,7 +18,7 @@ def main(base_dir, job_numbers):
 
     # Iterate over each job number
     for job_number in job_numbers:
-        job_file = f"splitLHE_{job_number}.lhe"
+        job_file = f"splitLHE_{job_number}.txt"
         job_file_path = os.path.join(split_lhe_dir, job_file)
 
         if not os.path.exists(job_file_path):
