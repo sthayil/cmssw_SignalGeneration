@@ -81,9 +81,9 @@ process.schedule = cms.Schedule()
 process.schedule.extend(process.HLTSchedule)
 process.schedule.extend([process.endjob_step,process.RAWSIMoutput_step])
 
-#Setup FWK for multithreaded
-process.options.numberOfThreads=cms.untracked.uint32(8)
-process.options.numberOfStreams=cms.untracked.uint32(0)
+# #Setup FWK for multithreaded
+# process.options.numberOfThreads=cms.untracked.uint32(8)
+# process.options.numberOfStreams=cms.untracked.uint32(0)
 
 # customisation of the process.
 

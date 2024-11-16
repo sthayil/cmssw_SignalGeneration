@@ -79,9 +79,9 @@ process.schedule.extend([process.endjob_step,process.RAWSIMoutput_step])
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
-#Setup FWK for multithreaded
-process.options.numberOfThreads=cms.untracked.uint32(1)
-process.options.numberOfStreams=cms.untracked.uint32(0)
+# #Setup FWK for multithreaded
+# process.options.numberOfThreads=cms.untracked.uint32(1)
+# process.options.numberOfStreams=cms.untracked.uint32(0)
 
 # customisation of the process.
 
