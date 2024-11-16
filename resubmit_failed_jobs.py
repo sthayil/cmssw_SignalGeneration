@@ -10,8 +10,9 @@ def main(base_dir, job_numbers):
         print(f"Directory {base_dir} does not exist.")
         sys.exit(1)
 
-    split_lhe_dir = os.path.join(base_dir, "split_lhe")
-    jdl_dir = os.path.join(base_dir, "jdl_files")
+    os.chdir(base_dir)
+    split_lhe_dir = "split_lhe"
+    jdl_dir = "jdl_files"
 
     # Get the current timestamp in YYMMDDHH format
     current_time = datetime.now().strftime("%y%m%d%H")
@@ -75,7 +76,6 @@ def main(base_dir, job_numbers):
                     temp_file.write(jdl_content_with_job)
 
                 # Submit the job
-                #os.system('cd '+)
                 try:
                     os.system('condor_submit '+temp_jdl_path)
                 except Exception as e:

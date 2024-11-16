@@ -6,6 +6,7 @@ import subprocess
 
 # Use subprocess to get the output and store it in a list
 cmd = f"eos root://cmseos.fnal.gov ls {sys.argv[1]}"
+cmd = f"ls {sys.argv[1]}"
 filelist_output = subprocess.getoutput(cmd)
 
 filenums = []
